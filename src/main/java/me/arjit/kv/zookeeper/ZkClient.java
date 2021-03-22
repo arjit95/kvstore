@@ -9,6 +9,8 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import java.util.List;
+
 public class ZkClient {
     private static CuratorFramework client;
     final private CuratorFramework cf;
@@ -26,8 +28,12 @@ public class ZkClient {
         cf.start();
     }
 
-    public void create(String path, String data) throws Exception {
-        cf.create()
+    public CuratorFramework getClient() {
+        return cf;
+    }
+
+    public String create(String path, String data) throws Exception {
+        return cf.create()
             .orSetData()
             .creatingParentsIfNeeded()
             .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
@@ -54,6 +60,7 @@ public class ZkClient {
 
         CuratorCache cache = CuratorCache.build(cf, path);
         cache.listenable().addListener(cacheListener);
+        cache.start();
     }
 
 

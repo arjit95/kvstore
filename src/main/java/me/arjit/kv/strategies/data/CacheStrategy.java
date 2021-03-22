@@ -1,4 +1,4 @@
-package me.arjit.kv.strategies;
+package me.arjit.kv.strategies.data;
 
 import me.arjit.kv.models.CacheEntry;
 

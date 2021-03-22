@@ -1,4 +1,4 @@
-package me.arjit.kv.strategies;
+package me.arjit.kv.strategies.data;
 
 import me.arjit.kv.models.CacheEntry;
 
@@ -30,7 +30,7 @@ public class LRU<T> implements CacheStrategy<T> {
     }
 
     @Override
-    public CacheEntry remove(String key) {
+    public CacheEntry<T> remove(String key) {
         return this.entries.remove(key);
     }
 
@@ -45,7 +45,7 @@ public class LRU<T> implements CacheStrategy<T> {
     }
 
     @Override
-    public CacheEntry get(String key) {
+    public CacheEntry<T> get(String key) {
         return this.entries.getOrDefault(key, null);
     }
 }

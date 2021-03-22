@@ -17,6 +17,7 @@ ext {
 }
 
 dependencies {
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
