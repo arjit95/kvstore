@@ -1,22 +1,22 @@
 package me.arjit.kv.models;
 
+import me.arjit.kv.discovery.DiscoveryClient;
 import me.arjit.kv.store.Cache;
-import me.arjit.kv.discovery.zookeeper.ZkClient;
 
 public class Context {
     private Cache<byte[]> cacheStore;
-    private ZkClient zkClient;
+    private DiscoveryClient zkClient;
     private static Context context;
 
     private Context() {
 
     }
 
-    public ZkClient getZookeeperClient() {
+    public DiscoveryClient getDiscoveryClient() {
         return zkClient;
     }
 
-    public void setZookeeperClient(ZkClient zkClient) {
+    public void setDiscoveryClient(DiscoveryClient zkClient) {
         this.zkClient = zkClient;
     }
 

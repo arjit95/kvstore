@@ -10,7 +10,6 @@ import me.arjit.kv.store.Cache;
 import me.arjit.kv.strategies.replication.NoReplication;
 import me.arjit.kv.strategies.replication.NodeReplication;
 import me.arjit.kv.utils.ClusterInfo;
-import me.arjit.kv.discovery.zookeeper.ZkChangeListenerImpl;
 import me.arjit.kv.discovery.zookeeper.ZkClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,12 +31,13 @@ public class Bootstrap {
         Cache<byte[]> store = ByteStore.getInstance();
         store.setLimit(10000);
 
+        //TODO: Change this to a generic discovery client
         ZkClient zkc = new ZkClient(config.getConfigValue(Constants.ZOOKEEPER_HOST));
         initZookeeperConfig(zkc);
 
         Context ctx = Context.getContext();
         ctx.setCacheStore(store);
-        ctx.setZookeeperClient(zkc);
+        ctx.setDiscoveryClient(zkc);
 
         if (ClusterInfo.getInstance().isLeader()) {
             store.setReplicationStrategy(new NodeReplication<>());
@@ -50,10 +50,9 @@ public class Bootstrap {
         String path = Constants.ZOOKEEPER_LEADER  + "/" + config.getConfigValue(Constants.APPLICATION_NAME);
 
         zkc.start();
-        String nodePath = zkc.create(path, "localhost:" + config.getConfigValue(Constants.SERVER_PORT));
+        String nodePath = zkc.create(path, "http://localhost:" + config.getConfigValue(Constants.SERVER_PORT));
         log.debug("Registered client {} with zookeeper", nodePath);
 
         ClusterInfo.getInstance().setName(Utils.getNameFromPath(nodePath));
-        zkc.addListener(Constants.ZOOKEEPER_LEADER, new ZkChangeListenerImpl());
     }
 }

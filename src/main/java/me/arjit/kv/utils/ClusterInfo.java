@@ -37,10 +37,6 @@ public class ClusterInfo {
         this.members.remove(member);
     }
 
-    public void setMembers(List<Server> members) {
-        this.members.addAll(members);
-    }
-
     public String getName() {
         return name;
     }
