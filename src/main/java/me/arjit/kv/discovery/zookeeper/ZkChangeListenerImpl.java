@@ -1,35 +1,35 @@
-package me.arjit.kv.zookeeper;
+package me.arjit.kv.discovery.zookeeper;
 
 import lombok.extern.slf4j.Slf4j;
+import me.arjit.kv.discovery.DiscoveryListener;
 import me.arjit.kv.models.Context;
+import me.arjit.kv.models.Server;
 import me.arjit.kv.strategies.replication.NoReplication;
 import me.arjit.kv.strategies.replication.NodeReplication;
 import me.arjit.kv.utils.ClusterInfo;
-import org.apache.catalina.Cluster;
-import org.apache.curator.framework.recipes.cache.ChildData;
 
 @Slf4j
-public class ZkChangeListenerImpl implements ZkChangeListener {
+public class ZkChangeListenerImpl implements DiscoveryListener {
     private boolean isLeader = false;
 
     @Override
-    public void add(ChildData data) {
-        ClusterInfo.getInstance().getMembers().add(data.getPath());
-        log.debug("Adding {} to members list", data.getPath());
+    public void add(Server server) {
+        ClusterInfo.getInstance().getMembers().add(server.getAddress());
+        log.debug("Adding {} to members list", server.getName());
         updateRS();
     }
 
     @Override
-    public void remove(ChildData data) {
-        ClusterInfo.getInstance().getMembers().remove(data.getPath());
-        log.debug("Removing {} from members list", data.getPath());
+    public void remove(Server server) {
+        ClusterInfo.getInstance().removeMember(server.getAddress());
+        log.debug("Removing {} from members list", server.getName());
         updateRS();
     }
 
     @Override
-    public void modify(ChildData old, ChildData data) {
-        remove(old);
-        add(data);
+    public void modify(Server oldS, Server newS) {
+        remove(oldS);
+        add(newS);
     }
 
     private void updateRS() {

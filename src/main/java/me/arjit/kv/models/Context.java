@@ -1,7 +1,7 @@
 package me.arjit.kv.models;
 
 import me.arjit.kv.store.Cache;
-import me.arjit.kv.zookeeper.ZkClient;
+import me.arjit.kv.discovery.zookeeper.ZkClient;
 
 public class Context {
     private Cache<byte[]> cacheStore;

@@ -1,9 +1,12 @@
 package me.arjit.kv.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 public class ClusterInfo {
     private static ClusterInfo instance;
     private List<String> members;
@@ -17,6 +20,10 @@ public class ClusterInfo {
         return members;
     }
 
+    public void removeMember(String member) {
+        this.getMembers().remove(member);
+    }
+
     public void setMembers(List<String> members) {
         Collections.sort(members);
         this.members = members;
@@ -27,6 +34,7 @@ public class ClusterInfo {
     }
 
     public void setName(String name) {
+        log.debug("Setting node name to {}", name);
         this.name = name;
     }
 

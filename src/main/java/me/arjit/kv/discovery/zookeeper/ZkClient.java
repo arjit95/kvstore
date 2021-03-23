@@ -1,5 +1,8 @@
-package me.arjit.kv.zookeeper;
+package me.arjit.kv.discovery.zookeeper;
 
+import me.arjit.kv.config.Constants;
+import me.arjit.kv.discovery.DiscoveryListener;
+import me.arjit.kv.models.Server;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -9,7 +12,7 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class ZkClient {
     private static CuratorFramework client;
@@ -40,21 +43,36 @@ public class ZkClient {
             .forPath(path, data.getBytes());
     }
 
-    public void addListener(String path, ZkChangeListener listener) {
-        CuratorCacheListener cacheListener = CuratorCacheListener.builder().forAll(new CuratorCacheListener() {
-            @Override
-            public void event(Type type, ChildData oldData, ChildData data) {
-                switch(type) {
-                    case NODE_CHANGED:
-                        listener.modify(oldData, data);
-                        break;
-                    case NODE_CREATED:
-                        listener.add(data);
-                        break;
-                    case NODE_DELETED:
-                        listener.remove(oldData);
-                        break;
-                }
+    private Server getServer(ChildData data) {
+        // Leader is not a valid server
+        if (data == null || data.getPath().equals(Constants.ZOOKEEPER_LEADER)) {
+            return null;
+        }
+
+        return Server.create(data.getPath(), Arrays.toString(data.getData()));
+    }
+
+    public void addListener(String path, DiscoveryListener listener) {
+        CuratorCacheListener cacheListener = CuratorCacheListener.builder().forAll((type, oldData, data) -> {
+            Server oldS = getServer(oldData);
+            Server newS = getServer(data);
+
+            switch(type) {
+                case NODE_CHANGED:
+                    if (oldS != null && newS != null) {
+                        listener.modify(oldS, newS);
+                    }
+                    break;
+                case NODE_CREATED:
+                    if (newS != null) {
+                        listener.add(newS);
+                    }
+                    break;
+                case NODE_DELETED:
+                    if (oldS != null) {
+                        listener.remove(oldS);
+                    }
+                    break;
             }
         }).build();
 
