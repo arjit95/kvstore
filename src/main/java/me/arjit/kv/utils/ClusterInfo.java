@@ -1,10 +1,11 @@
 package me.arjit.kv.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import me.arjit.kv.config.environment.Constants;
+import me.arjit.kv.models.Context;
 import me.arjit.kv.models.Server;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -60,5 +61,10 @@ public class ClusterInfo {
         }
 
         return instance;
+    }
+
+    public String getAddress() {
+        Context context = Context.getContext();
+        return Constants.ZOOKEEPER_LEADER  + "/" + context.env.getValue(Constants.APPLICATION_NAME);
     }
 }

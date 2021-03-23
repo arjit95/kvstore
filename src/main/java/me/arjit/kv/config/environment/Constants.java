@@ -1,4 +1,4 @@
-package me.arjit.kv.config;
+package me.arjit.kv.config.environment;
 
 public class Constants {
     public static final String ZOOKEEPER_HOST = "spring.cloud.zookeeper.connectString";

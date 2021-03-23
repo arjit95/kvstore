@@ -1,23 +1,31 @@
 package me.arjit.kv.models;
 
+import me.arjit.kv.config.environment.Env;
+import me.arjit.kv.config.ContextConfig;
 import me.arjit.kv.discovery.DiscoveryClient;
 import me.arjit.kv.store.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Context {
+    @Autowired
+    public Env env;
+
     private Cache<byte[]> cacheStore;
-    private DiscoveryClient zkClient;
+    private DiscoveryClient discoveryClient;
     private static Context context;
 
-    private Context() {
+    public Context() {
 
     }
 
     public DiscoveryClient getDiscoveryClient() {
-        return zkClient;
+        return discoveryClient;
     }
 
-    public void setDiscoveryClient(DiscoveryClient zkClient) {
-        this.zkClient = zkClient;
+    public void setDiscoveryClient(DiscoveryClient ds) {
+        this.discoveryClient = ds;
     }
 
     public Cache<byte[]> getCacheStore() {
@@ -30,7 +38,8 @@ public class Context {
 
     public static Context getContext() {
         if (context == null) {
-            context = new Context();
+            ApplicationContext ctx = new AnnotationConfigApplicationContext(ContextConfig.class, Env.class);
+            context = ctx.getBean(Context.class);
         }
 
         return context;

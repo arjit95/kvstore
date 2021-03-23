@@ -2,12 +2,10 @@ package me.arjit.kv.rest;
 
 import me.arjit.kv.models.CacheEntry;
 import me.arjit.kv.models.Server;
-import me.arjit.kv.models.SyncServiceConfiguration;
+import me.arjit.kv.config.SyncServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -37,7 +35,7 @@ public class SyncService {
 
     public static SyncService getInstance() {
         if (instance == null) {
-            ApplicationContext ctx = new AnnotationConfigApplicationContext(SyncServiceConfiguration.class, Client.class);
+            ApplicationContext ctx = new AnnotationConfigApplicationContext(SyncServiceConfig.class, Client.class);
             instance = ctx.getBean(SyncService.class);
         }
 

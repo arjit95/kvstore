@@ -1,7 +1,7 @@
 package me.arjit.kv.discovery.zookeeper;
 
 import lombok.extern.slf4j.Slf4j;
-import me.arjit.kv.config.Constants;
+import me.arjit.kv.config.environment.Constants;
 import me.arjit.kv.discovery.DiscoveryClient;
 import me.arjit.kv.discovery.DiscoveryListener;
 import me.arjit.kv.models.Server;
@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ZkClient implements DiscoveryClient {
-    private static CuratorFramework client;
     final private CuratorFramework cf;
     private CuratorCacheListener listener;
     private CuratorCache cache;
