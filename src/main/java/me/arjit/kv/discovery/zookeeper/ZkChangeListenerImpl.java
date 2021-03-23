@@ -14,14 +14,14 @@ public class ZkChangeListenerImpl implements DiscoveryListener {
 
     @Override
     public void add(Server server) {
-        ClusterInfo.getInstance().getMembers().add(server.getAddress());
+        ClusterInfo.getInstance().addMember(server);
         log.debug("Adding {} to members list", server.getName());
         updateRS();
     }
 
     @Override
     public void remove(Server server) {
-        ClusterInfo.getInstance().removeMember(server.getAddress());
+        ClusterInfo.getInstance().removeMember(server);
         log.debug("Removing {} from members list", server.getName());
         updateRS();
     }

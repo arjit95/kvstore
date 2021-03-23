@@ -1,32 +1,44 @@
 package me.arjit.kv.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import me.arjit.kv.models.Server;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Slf4j
 public class ClusterInfo {
     private static ClusterInfo instance;
-    private List<String> members;
+    private final SortedSet<Server> members;
     private String name;
 
     private ClusterInfo() {
-        members = new ArrayList<>();
+        members = new TreeSet<>(Comparator.comparing(Server::getName));
     }
 
-    public List<String> getMembers() {
-        return members;
+    public Server[] getMembers() {
+        Server[] memberList = new Server[members.size()];
+        int i = 0;
+
+        for (Server member : members) {
+            memberList[i++] = member;
+        }
+
+        return memberList;
     }
 
-    public void removeMember(String member) {
-        this.getMembers().remove(member);
+    public void addMember(Server member) {
+        this.members.add(member);
     }
 
-    public void setMembers(List<String> members) {
-        Collections.sort(members);
-        this.members = members;
+    public void removeMember(Server member) {
+        this.members.remove(member);
+    }
+
+    public void setMembers(List<Server> members) {
+        this.members.addAll(members);
     }
 
     public String getName() {
@@ -39,11 +51,11 @@ public class ClusterInfo {
     }
 
     public boolean isLeader() {
-        if (this.name == null) {
+        if (this.name == null || this.members.size() == 0) {
             return false;
         }
 
-        return this.name.equals(this.getMembers().get(0));
+        return this.name.equals(this.members.first().getName());
     }
 
     public static ClusterInfo getInstance() {

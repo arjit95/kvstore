@@ -1,5 +1,6 @@
 package me.arjit.kv.discovery.zookeeper;
 
+import lombok.extern.slf4j.Slf4j;
 import me.arjit.kv.config.Constants;
 import me.arjit.kv.discovery.DiscoveryListener;
 import me.arjit.kv.models.Server;
@@ -12,8 +13,12 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+@Slf4j
 public class ZkClient {
     private static CuratorFramework client;
     final private CuratorFramework cf;
@@ -49,7 +54,8 @@ public class ZkClient {
             return null;
         }
 
-        return Server.create(data.getPath(), Arrays.toString(data.getData()));
+        String hostname = new String(data.getData(), StandardCharsets.UTF_8);
+        return Server.create(Utils.getNameFromPath(data.getPath()), hostname);
     }
 
     public void addListener(String path, DiscoveryListener listener) {
@@ -80,6 +86,4 @@ public class ZkClient {
         cache.listenable().addListener(cacheListener);
         cache.start();
     }
-
-
 }

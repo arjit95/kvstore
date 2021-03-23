@@ -3,10 +3,12 @@ package me.arjit.kv;
 import lombok.extern.slf4j.Slf4j;
 import me.arjit.kv.config.Config;
 import me.arjit.kv.config.Constants;
+import me.arjit.kv.discovery.zookeeper.Utils;
 import me.arjit.kv.models.Context;
 import me.arjit.kv.store.ByteStore;
 import me.arjit.kv.store.Cache;
 import me.arjit.kv.strategies.replication.NoReplication;
+import me.arjit.kv.strategies.replication.NodeReplication;
 import me.arjit.kv.utils.ClusterInfo;
 import me.arjit.kv.discovery.zookeeper.ZkChangeListenerImpl;
 import me.arjit.kv.discovery.zookeeper.ZkClient;
@@ -28,7 +30,6 @@ public class Bootstrap {
 
     private void initContext() throws Exception {
         Cache<byte[]> store = ByteStore.getInstance();
-        store.setReplicationStrategy(new NoReplication<>());
         store.setLimit(10000);
 
         ZkClient zkc = new ZkClient(config.getConfigValue(Constants.ZOOKEEPER_HOST));
@@ -37,17 +38,22 @@ public class Bootstrap {
         Context ctx = Context.getContext();
         ctx.setCacheStore(store);
         ctx.setZookeeperClient(zkc);
+
+        if (ClusterInfo.getInstance().isLeader()) {
+            store.setReplicationStrategy(new NodeReplication<>());
+        } else {
+            store.setReplicationStrategy(new NoReplication<>());
+        }
     }
 
     private void initZookeeperConfig(ZkClient zkc) throws Exception {
         String path = Constants.ZOOKEEPER_LEADER  + "/" + config.getConfigValue(Constants.APPLICATION_NAME);
-        log.debug("Registering client {} with zookeeper", path);
 
         zkc.start();
         String nodePath = zkc.create(path, "localhost:" + config.getConfigValue(Constants.SERVER_PORT));
+        log.debug("Registered client {} with zookeeper", nodePath);
 
-        ClusterInfo.getInstance().setMembers(zkc.getClient().getChildren().forPath(Constants.ZOOKEEPER_LEADER));
-        ClusterInfo.getInstance().setName(nodePath);
+        ClusterInfo.getInstance().setName(Utils.getNameFromPath(nodePath));
         zkc.addListener(Constants.ZOOKEEPER_LEADER, new ZkChangeListenerImpl());
     }
 }
