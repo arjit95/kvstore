@@ -3,14 +3,15 @@ package zookeeper
 import (
 	"path"
 
+	"github.com/arjit95/kvstore/go/discovery"
 	"github.com/z-division/go-zookeeper/zk"
 )
 
 // Listener interface needs to be implemented by all the callers which want
 // to use watcher to get any updates
 type Listener interface {
-	OnAdd(Server) error
-	OnRemove(Server) error
+	OnAdd(discovery.Server) error
+	OnRemove(discovery.Server) error
 	OnError(error)
 }
 
@@ -21,7 +22,7 @@ type Watcher struct {
 
 	stop chan bool
 	ch   <-chan zk.Event
-	data map[string]Server
+	data map[string]discovery.Server
 
 	prefix   string
 	listener Listener
@@ -65,7 +66,7 @@ func (w *Watcher) watch(ch <-chan zk.Event) {
 	}
 }
 
-func (w *Watcher) removeServer(server Server) {
+func (w *Watcher) removeServer(server discovery.Server) {
 	delete(w.data, server.Path())
 }
 
@@ -75,7 +76,7 @@ func (w *Watcher) addServer(node string) error {
 		return err
 	}
 
-	w.data[node] = Server{path: node, content: data}
+	w.data[node] = discovery.CreateServer(node, data)
 	return nil
 }
 
@@ -149,7 +150,7 @@ func (zw *Watcher) Close() {
 func createWatcher(zc *Client, prefix string) *Watcher {
 	return &Watcher{
 		client: zc,
-		data:   make(map[string]Server),
+		data:   make(map[string]discovery.Server),
 		stop:   make(chan bool),
 		prefix: prefix,
 	}

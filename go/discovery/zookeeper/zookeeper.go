@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/arjit95/kvstore/go/discovery"
 	"github.com/z-division/go-zookeeper/zk"
 	"golang.org/x/sync/semaphore"
 )
@@ -38,12 +39,12 @@ func (zc *Client) Get(path string) (data []byte, stat *zk.Stat, err error) {
 	return
 }
 
-func (zc *Client) GetServer(path string) (Server, error) {
-	var server Server
+func (zc *Client) GetServer(path string) (discovery.Server, error) {
+	var server discovery.Server
 	err := zc.withRetry(func(conn *zk.Conn) error {
 		data, _, err := conn.Get(path)
 		if err == nil {
-			server = Server{path: path, content: data}
+			server = discovery.CreateServer(path, data)
 		}
 
 		return err
