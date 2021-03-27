@@ -5,10 +5,10 @@ import (
 	"log"
 	"sync"
 
-	"github.com/arjit95/kvstore/go/discovery"
-	"github.com/arjit95/kvstore/go/discovery/zookeeper"
-	"github.com/arjit95/kvstore/go/discovery/zookeeper/utils"
-	"github.com/arjit95/kvstore/go/ring"
+	"github.com/arjit95/kvstore/go/pkg/discovery"
+	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper"
+	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper/utils"
+	"github.com/arjit95/kvstore/go/pkg/ring"
 	"github.com/serialx/hashring"
 )
 

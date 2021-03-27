@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/arjit95/kvstore/go/discovery/zookeeper"
+	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper"
 )
 
 var dc *dataCenter

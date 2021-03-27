@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"strings"
 
-	"github.com/arjit95/kvstore/go/discovery"
+	"github.com/arjit95/kvstore/go/pkg/discovery"
 )
 
 type Servers []*discovery.Server

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/arjit95/kvstore/go/discovery"
+	"github.com/arjit95/kvstore/go/pkg/discovery"
 	"github.com/z-division/go-zookeeper/zk"
 	"golang.org/x/sync/semaphore"
 )

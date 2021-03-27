@@ -3,7 +3,7 @@ package zookeeper
 import (
 	"path"
 
-	"github.com/arjit95/kvstore/go/discovery"
+	"github.com/arjit95/kvstore/go/pkg/discovery"
 	"github.com/z-division/go-zookeeper/zk"
 )
 
@@ -21,7 +21,6 @@ type Watcher struct {
 	client *Client
 
 	stop chan bool
-	ch   <-chan zk.Event
 	data map[string]discovery.Server
 
 	prefix   string

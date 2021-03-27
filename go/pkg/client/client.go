@@ -1,10 +1,11 @@
-package kvstore
+package client
 
 import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Client struct {
@@ -15,12 +16,14 @@ func (c *Client) Put(key string, value []byte) error {
 	addr := c.hostname + "/api/cache/put"
 
 	jsonStr := []byte(fmt.Sprintf("{key: %s, value: %b}", key, value))
-	resp, err := http.NewRequest("POST", addr, bytes.NewBuffer(jsonStr))
+	resp, err := http.Post(addr, "application/json", bytes.NewBuffer(jsonStr))
+
 	if err != nil {
-		defer resp.Body.Close()
+		return err
 	}
 
-	return err
+	defer resp.Body.Close()
+	return nil
 }
 
 func (c *Client) Get(key string) ([]byte, error) {
@@ -41,5 +44,9 @@ func (c *Client) Get(key string) ([]byte, error) {
 }
 
 func CreateClient(hostname string) Client {
+	if strings.Index(hostname, "http") != 0 {
+		hostname = "http://" + hostname
+	}
+
 	return Client{hostname}
 }

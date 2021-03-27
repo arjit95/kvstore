@@ -1,8 +1,8 @@
 package discovery
 
 import (
-	kvstore "github.com/arjit95/kvstore/go"
-	"github.com/arjit95/kvstore/go/discovery/zookeeper/utils"
+	kvstore "github.com/arjit95/kvstore/go/pkg/client"
+	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper/utils"
 )
 
 // Server is used to store information inside a zookeeper node
