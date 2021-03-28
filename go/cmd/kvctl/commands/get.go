@@ -26,7 +26,7 @@ func CreateGetCommand(f *factory.Factory) *cobra.Command {
 				}
 
 				if err != nil {
-					cmd.Printf("%b", val)
+					cmd.Printf("%s", string(val))
 					return nil
 				}
 
