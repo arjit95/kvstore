@@ -28,4 +28,17 @@ public class Server {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getPartitionName() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isDigit(name.charAt(i))) {
+                break;
+            }
+
+            builder.append(name.charAt(i));
+        }
+
+        return builder.toString();
+    }
 }

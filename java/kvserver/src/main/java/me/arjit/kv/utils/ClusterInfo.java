@@ -1,8 +1,6 @@
 package me.arjit.kv.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import me.arjit.kv.config.environment.Constants;
-import me.arjit.kv.models.Context;
 import me.arjit.kv.models.Server;
 
 import java.util.Comparator;
@@ -42,9 +40,34 @@ public class ClusterInfo {
         return name;
     }
 
+    public String getPartitionName(String name) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isDigit(name.charAt(i))) {
+                break;
+            }
+
+            builder.append(name.charAt(i));
+        }
+
+        return builder.toString();
+    }
+
+    public String getPartitionName() {
+        return getPartitionName(name);
+    }
+
     public void setName(String name) {
         log.debug("Setting node name to {}", name);
         this.name = name;
+    }
+
+    public Server getLeader() {
+        if (this.members.size() == 0) {
+            return null;
+        }
+
+        return this.members.first();
     }
 
     public boolean isLeader() {
@@ -52,7 +75,7 @@ public class ClusterInfo {
             return false;
         }
 
-        return this.name.equals(this.members.first().getName());
+        return this.name.equals(this.getLeader().getName());
     }
 
     public static ClusterInfo getInstance() {
@@ -61,10 +84,5 @@ public class ClusterInfo {
         }
 
         return instance;
-    }
-
-    public String getAddress() {
-        Context context = Context.getContext();
-        return Constants.ZOOKEEPER_LEADER  + "/" + context.env.getValue(Constants.APPLICATION_NAME);
     }
 }

@@ -1,5 +1,6 @@
 package me.arjit.kv.strategies.data;
 
+import com.google.gson.Gson;
 import me.arjit.kv.models.CacheEntry;
 
 import java.util.LinkedHashMap;
@@ -24,13 +25,13 @@ public class LRU<T> implements CacheStrategy<T> {
     }
 
     @Override
-    public boolean put(CacheEntry<T> entry) {
+    public synchronized boolean put(CacheEntry<T> entry) {
         this.entries.put(entry.getKey(), entry);
         return true;
     }
 
     @Override
-    public CacheEntry<T> remove(String key) {
+    public synchronized CacheEntry<T> remove(String key) {
         return this.entries.remove(key);
     }
 
@@ -47,5 +48,17 @@ public class LRU<T> implements CacheStrategy<T> {
     @Override
     public CacheEntry<T> get(String key) {
         return this.entries.getOrDefault(key, null);
+    }
+
+    @Override
+    public String serialize() {
+        Gson gson = new Gson();
+        return gson.toJson(entries, LinkedHashMap.class);
+    }
+
+    @Override
+    public synchronized void deserialize(Map<String, CacheEntry<T>> values) {
+        entries.clear();
+        entries.putAll(values);
     }
 }

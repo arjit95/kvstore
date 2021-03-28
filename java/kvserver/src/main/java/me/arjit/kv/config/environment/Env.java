@@ -11,7 +11,7 @@ public class Env {
     @Autowired
     private Environment env;
 
-    public String getValue(String configKey){
+    public String getValue(String configKey) {
         return env.getProperty(configKey);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfig {
     @Bean(name = "cacheStrategyBean")
     @ConditionalOnProperty(prefix= "kvstore.cache", name = "strategy", havingValue = "lru")
-    public static CacheStrategy<byte[]> cacheStrategyConfig() {
+    public CacheStrategy<byte[]> cacheStrategyConfig() {
         CacheStrategy<byte[]> strategy = new LRU<>();
 
         Cache<byte[]> cache = new Cache<>(strategy);

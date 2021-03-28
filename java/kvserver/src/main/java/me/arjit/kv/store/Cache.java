@@ -20,6 +20,10 @@ public class Cache<T> {
         this.replicationStrategy = rs;
     }
 
+    final public CacheStrategy<T> getCacheStrategy() {
+        return strategy;
+    }
+
     final public ReplicationStrategy<T> getReplicationStrategy() {
         return replicationStrategy;
     }

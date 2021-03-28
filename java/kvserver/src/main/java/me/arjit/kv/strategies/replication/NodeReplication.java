@@ -5,7 +5,6 @@ import me.arjit.kv.models.CacheEntry;
 import me.arjit.kv.models.Server;
 import me.arjit.kv.rest.SyncService;
 import me.arjit.kv.utils.ClusterInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class NodeReplication<T> implements ReplicationStrategy<T> {
     public void get(String key) {
         Server[] members = ClusterInfo.getInstance().getMembers();
         String nodeName = ClusterInfo.getInstance().getName();
-        List<CompletableFuture<CacheEntry<byte[]>>> allFutures = new ArrayList<>();
+        List<CompletableFuture<byte[]>> allFutures = new ArrayList<>();
 
         for (Server member: members) {
             if (member.getName().equals(nodeName)) {

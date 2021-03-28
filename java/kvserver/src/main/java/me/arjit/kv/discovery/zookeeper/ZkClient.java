@@ -5,6 +5,7 @@ import me.arjit.kv.config.environment.Constants;
 import me.arjit.kv.discovery.DiscoveryClient;
 import me.arjit.kv.discovery.DiscoveryListener;
 import me.arjit.kv.models.Server;
+import me.arjit.kv.utils.ClusterInfo;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -38,9 +39,19 @@ public class ZkClient implements DiscoveryClient {
     }
 
     @Override
+    public void register(String address, String appName) throws Exception {
+        // Register this client with zookeeper
+        String path = Constants.ZOOKEEPER_LEADER  + "/" + appName;
+        String nodePath = this.create(path, address);
+
+        log.debug("Registered client {} with zookeeper", nodePath);
+        ClusterInfo.getInstance().setName(Utils.getNameFromPath(nodePath));
+        this.addListener(new ZkChangeListenerImpl());
+    }
+
+    @Override
     public void start() {
         cf.start();
-        this.addListener(new ZkChangeListenerImpl());
     }
 
     public String create(String path, String data) throws Exception {
