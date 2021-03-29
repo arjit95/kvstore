@@ -84,7 +84,14 @@ func (p *Partition) removeReplica(server discovery.Server) bool {
 	}
 
 	heap.Remove(&p.replicas, idx)
-	log.Println(p.replicas.Peek().Path(), "is leader")
+
+	leader := p.replicas.Peek()
+	if leader != nil {
+		log.Println(leader.Path(), "is leader")
+	} else {
+		log.Println("All replicas are removed for", p.name)
+	}
+
 	return true
 }
 
