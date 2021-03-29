@@ -6,15 +6,12 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/arjit95/kvstore/go/pkg/client"
 )
 
-type Entry struct {
-	Key   string
-	Value []byte
-}
-
 func putEntry(w http.ResponseWriter, r *http.Request) {
-	var cacheEntry Entry
+	var cacheEntry client.Entry
 
 	err := json.NewDecoder(r.Body).Decode(&cacheEntry)
 	if err != nil {
@@ -23,7 +20,11 @@ func putEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	start := time.Now()
-	dc.addEntry(cacheEntry.Key, cacheEntry.Value)
+	err = dc.addEntry(cacheEntry)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	end := time.Since(start)
 	fmt.Println("Took", end.Milliseconds(), "ms for /put to complete")

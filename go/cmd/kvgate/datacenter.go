@@ -5,6 +5,7 @@ import (
 	"log"
 	"sync"
 
+	"github.com/arjit95/kvstore/go/pkg/client"
 	"github.com/arjit95/kvstore/go/pkg/discovery"
 	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper"
 	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper/utils"
@@ -79,8 +80,8 @@ func (dc *dataCenter) OnAdd(server discovery.Server) error {
 	return nil
 }
 
-func (dc *dataCenter) addEntry(key string, value []byte) error {
-	partition, ok := dc.hr.GetNode(key)
+func (dc *dataCenter) addEntry(entry client.Entry) error {
+	partition, ok := dc.hr.GetNode(entry.Key)
 	err := errors.New("cannot find partition for the key")
 	if !ok {
 		return err
@@ -91,7 +92,7 @@ func (dc *dataCenter) addEntry(key string, value []byte) error {
 		return err
 	}
 
-	return server.Put(key, value)
+	return server.Put(entry)
 }
 
 func (dc *dataCenter) getEntry(key string) ([]byte, error) {

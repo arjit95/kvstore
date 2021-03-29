@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,17 +13,23 @@ type Client struct {
 	hostname string
 }
 
-func (c *Client) Put(key string, value []byte) error {
+type Entry struct {
+	Key   string `json:"key"`
+	Value []byte `json:"value"`
+}
+
+func (c *Client) Put(entry Entry) error {
 	addr := c.hostname + "/api/cache/put"
 
-	jsonStr := []byte(fmt.Sprintf("{key: %s, value: %b}", key, value))
-	resp, err := http.Post(addr, "application/json", bytes.NewBuffer(jsonStr))
+	jsonValue, _ := json.Marshal(entry)
+	resp, err := http.Post(addr, "application/json", bytes.NewBuffer(jsonValue))
 
 	if err != nil {
 		return err
 	}
 
 	defer resp.Body.Close()
+
 	return nil
 }
 
