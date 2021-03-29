@@ -5,6 +5,7 @@ import (
 
 	"github.com/arjit95/cobi"
 	"github.com/arjit95/cobi/editor"
+	"github.com/gdamore/tcell"
 	"github.com/spf13/cobra"
 
 	"github.com/arjit95/kvstore/go/cmd/kvctl/commands"
@@ -54,6 +55,7 @@ func main() {
 	if interactive {
 		cmd.Editor.SetUpperPaneTitle("Kv store")
 		cmd.Editor.SetLowerPaneTitle("Logs")
+		cmd.Editor.Input.SetFieldBackgroundColor(tcell.ColorBlack)
 		cmd.Flag("interactive").Hidden = true
 		cmd.ExecuteInteractive()
 	} else {
