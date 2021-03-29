@@ -25,6 +25,8 @@ func CreatePutCommand(f *factory.Factory) *cobra.Command {
 				}
 			}
 
+			cmd.Printf("Successfully inserted key %s\n", args[0])
+
 			return nil
 		},
 	}

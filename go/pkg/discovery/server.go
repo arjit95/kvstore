@@ -1,7 +1,6 @@
 package discovery
 
 import (
-	"github.com/arjit95/kvstore/go/pkg/client"
 	kvstore "github.com/arjit95/kvstore/go/pkg/client"
 	"github.com/arjit95/kvstore/go/pkg/discovery/zookeeper/utils"
 )
@@ -32,7 +31,7 @@ func (s Server) String() string {
 	return string(s.Content())
 }
 
-func (s Server) Put(entry client.Entry) error {
+func (s Server) Put(entry kvstore.Entry) error {
 	return s.client.Put(entry)
 }
 

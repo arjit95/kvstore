@@ -20,17 +20,18 @@ func CreateGetCommand(f *factory.Factory) *cobra.Command {
 			var e error
 			for _, client := range f.Clients {
 				val, err := client.Get(key)
+				if err != nil {
+					e = err
+					continue
+				}
+
 				if len(val) == 0 {
 					e = errNotFound
 					continue
 				}
 
-				if err != nil {
-					cmd.Printf("%s", string(val))
-					return nil
-				}
-
-				e = err
+				cmd.Printf("%s \n", string(val))
+				return nil
 			}
 
 			return e

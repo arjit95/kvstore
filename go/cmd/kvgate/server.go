@@ -47,7 +47,7 @@ func getEntry(w http.ResponseWriter, r *http.Request) {
 
 	end := time.Since(start)
 	fmt.Println("Took", end.Milliseconds(), "ms for /get to complete")
-	fmt.Fprintf(w, "%b", val)
+	fmt.Fprintf(w, "%s", string(val))
 }
 
 func registerRoutes() *http.ServeMux {
